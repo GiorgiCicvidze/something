@@ -3,13 +3,19 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: EternalHardcore Minecraft server API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: server
+    description: Minecraft server status
+  - name: players
+    description: Player data
+  - name: admin
+    description: Admin operations
 paths:
   /healthz:
     get:
@@ -24,6 +30,199 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /server/status:
+    get:
+      operationId: getServerStatus
+      tags: [server]
+      summary: Get Minecraft server status
+      description: Returns current server online status, player count, ping, and MOTD
+      responses:
+        "200":
+          description: Server status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerStatus"
+
+  /players/online:
+    get:
+      operationId: getOnlinePlayers
+      tags: [players]
+      summary: Get online players
+      description: Returns list of currently online players
+      responses:
+        "200":
+          description: Online player list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OnlinePlayer"
+
+  /players/stats:
+    get:
+      operationId: getPlayerStats
+      tags: [players]
+      summary: Get player stats leaderboard
+      description: Returns player stats sorted by kills
+      responses:
+        "200":
+          description: Player stats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlayerStat"
+
+  /admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admin]
+      summary: Admin login
+      description: Authenticate as admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginBody"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminLoginResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/logout:
+    post:
+      operationId: adminLogout
+      tags: [admin]
+      summary: Admin logout
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/me:
+    get:
+      operationId: getAdminMe
+      tags: [admin]
+      summary: Get current admin session
+      responses:
+        "200":
+          description: Current admin info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminInfo"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/settings:
+    get:
+      operationId: getAdminSettings
+      tags: [admin]
+      summary: Get server settings
+      responses:
+        "200":
+          description: Server settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerSettings"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateAdminSettings
+      tags: [admin]
+      summary: Update server settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateServerSettingsBody"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerSettings"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/players:
+    get:
+      operationId: getAdminPlayers
+      tags: [admin]
+      summary: Get all players with stats (admin view)
+      responses:
+        "200":
+          description: All players
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlayerStat"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/players/{username}/feature:
+    post:
+      operationId: featurePlayer
+      tags: [admin]
+      summary: Toggle featured status for a player
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Player feature status updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +233,143 @@ components:
       required:
         - status
 
+    ServerStatus:
+      type: object
+      properties:
+        online:
+          type: boolean
+        playerCount:
+          type: integer
+        maxPlayers:
+          type: integer
+        latencyMs:
+          type: ["integer", "null"]
+        motd:
+          type: string
+        statusOverride:
+          type: ["string", "null"]
+          description: "Manual override: 'online' | 'offline' | null"
+      required:
+        - online
+        - playerCount
+        - maxPlayers
+        - latencyMs
+        - motd
+        - statusOverride
+
+    OnlinePlayer:
+      type: object
+      properties:
+        username:
+          type: string
+        uuid:
+          type: ["string", "null"]
+        avatarUrl:
+          type: string
+      required:
+        - username
+        - uuid
+        - avatarUrl
+
+    PlayerStat:
+      type: object
+      properties:
+        username:
+          type: string
+        kills:
+          type: integer
+        deaths:
+          type: integer
+        playtimeMinutes:
+          type: integer
+        featured:
+          type: boolean
+        avatarUrl:
+          type: string
+      required:
+        - username
+        - kills
+        - deaths
+        - playtimeMinutes
+        - featured
+        - avatarUrl
+
+    AdminLoginBody:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    AdminLoginResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        username:
+          type: string
+        role:
+          type: string
+      required:
+        - success
+        - username
+        - role
+
+    AdminInfo:
+      type: object
+      properties:
+        username:
+          type: string
+        role:
+          type: string
+      required:
+        - username
+        - role
+
+    ServerSettings:
+      type: object
+      properties:
+        motd:
+          type: string
+        statusOverride:
+          type: ["string", "null"]
+        featuredPlayers:
+          type: array
+          items:
+            type: string
+      required:
+        - motd
+        - statusOverride
+        - featuredPlayers
+
+    UpdateServerSettingsBody:
+      type: object
+      properties:
+        motd:
+          type: string
+        statusOverride:
+          type: ["string", "null"]
+        featuredPlayers:
+          type: array
+          items:
+            type: string
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error

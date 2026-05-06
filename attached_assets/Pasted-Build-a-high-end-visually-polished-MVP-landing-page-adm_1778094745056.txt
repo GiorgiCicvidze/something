@@ -1,0 +1,283 @@
+Build a high-end, visually polished MVP landing page + admin panel for a Minecraft server with IP play.eternalhardcore.xyz, combining minimalism with advanced motion design.
+
+Core concept
+
+
+Single-page public landing with premium, immersive design.
+
+
+Separate admin panel interface (protected access).
+
+
+Dark, hardcore-themed visual identity with subtle neon accents.
+
+
+Smooth, high-performance animations and microinteractions.
+
+
+
+Public landing page (MVP)
+Hero section
+
+
+Server name + hardcore-themed tagline.
+
+
+Prominent IP display (play.eternalhardcore.xyz) with “click to copy”.
+
+
+Real-time live player count (API polling or socket).
+
+
+Animated background (particles, gradients, or voxel-style motion).
+
+
+Live data
+
+
+Live player count (auto-refresh every 10–20 seconds).
+
+
+Online player list (dynamic).
+
+
+Player stats (MVP fields):
+
+
+username
+
+
+kills
+
+
+deaths
+
+
+playtime
+
+
+
+
+Server status:
+
+
+online/offline
+
+
+latency/ping
+
+
+
+
+Attribution
+
+
+Owner: critz_1
+
+
+Main Developer: ItzZaDucky
+
+
+
+Custom cursor system
+
+
+Replace default cursor with custom system:
+
+
+Inner dot (fast follow)
+
+
+Outer ring (delayed, smooth trailing)
+
+
+
+
+Dynamic behavior:
+
+
+Expands on hover over clickable elements
+
+
+Color shifts based on hover/sections
+
+
+Click feedback (scale + glow/distortion)
+
+
+
+
+Optimized with requestAnimationFrame for performance.
+
+
+
+UI / UX constraints
+
+
+Sections: Hero → Live Stats → Players → Footer
+
+
+Minimal layout, no clutter
+
+
+Glassmorphism panels (blur + transparency)
+
+
+Smooth scrolling and transitions
+
+
+Responsive (mobile uses simplified cursor or fallback)
+
+
+
+Admin panel (MVP)
+Access
+
+
+Separate route (e.g., /admin)
+
+
+Login system (basic authentication for MVP)
+
+
+Admin accounts (hardcoded for MVP)
+
+
+Username: ducky
+Password: adminducky
+
+
+Username: critz
+Password: ownercritz
+
+
+Admin features
+
+
+View:
+
+
+Live player list
+
+
+Player stats
+
+
+Server status
+
+
+
+
+Manage (basic controls):
+
+
+Edit server MOTD
+
+
+Toggle server status display override (manual online/offline)
+
+
+Highlight featured players
+
+
+
+
+Simple dashboard layout:
+
+
+Stats overview cards
+
+
+Player table
+
+
+Control panel section
+
+
+
+
+
+Technical scope
+
+
+Frontend:
+
+
+React + Tailwind CSS
+
+
+
+
+Animations:
+
+
+Framer Motion or GSAP (lightweight usage)
+
+
+
+
+Backend (recommended):
+
+
+Node.js (Express) API proxy for:
+
+
+Minecraft server queries
+
+
+Player stats normalization
+
+
+Admin authentication (session or token-based)
+
+
+
+
+
+
+Data fetching:
+
+
+Poll every 10–20 seconds
+
+
+
+
+
+Constraints (MVP)
+
+
+No database required (in-memory or static config allowed)
+
+
+No user accounts beyond admin
+
+
+No payments, forums, or complex systems
+
+
+
+Optional (only if trivial)
+
+
+Animated MOTD display
+
+
+Sound feedback (muted by default)
+
+
+Basic logging of admin actions
+
+
+
+Out of scope
+
+
+Public user authentication
+
+
+Advanced permissions/roles
+
+
+Store, payments, or economy systems
+
