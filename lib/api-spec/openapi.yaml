@@ -197,6 +197,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: addPlayer
+      tags: [admin]
+      summary: Add a player to the leaderboard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddPlayerBody"
+      responses:
+        "200":
+          description: Player added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayerStat"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/players/{username}:
+    delete:
+      operationId: deletePlayer
+      tags: [admin]
+      summary: Remove a player from the leaderboard
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Player removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /admin/players/{username}/feature:
     post:
@@ -212,6 +260,75 @@ paths:
       responses:
         "200":
           description: Player feature status updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/staff:
+    get:
+      operationId: getAdminStaff
+      tags: [admin]
+      summary: Get staff team list
+      responses:
+        "200":
+          description: Staff team
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StaffMember"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: addStaffMember
+      tags: [admin]
+      summary: Add or update a staff member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddStaffBody"
+      responses:
+        "200":
+          description: Staff member added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StaffMember"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/staff/{username}:
+    delete:
+      operationId: deleteStaffMember
+      tags: [admin]
+      summary: Remove a staff member
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Staff member removed
           content:
             application/json:
               schema:
@@ -293,6 +410,48 @@ components:
         - playtimeMinutes
         - featured
         - avatarUrl
+
+    AddPlayerBody:
+      type: object
+      properties:
+        username:
+          type: string
+        kills:
+          type: integer
+        deaths:
+          type: integer
+        playtimeMinutes:
+          type: integer
+      required:
+        - username
+        - kills
+        - deaths
+        - playtimeMinutes
+
+    StaffMember:
+      type: object
+      properties:
+        username:
+          type: string
+        role:
+          type: string
+        avatarUrl:
+          type: string
+      required:
+        - username
+        - role
+        - avatarUrl
+
+    AddStaffBody:
+      type: object
+      properties:
+        username:
+          type: string
+        role:
+          type: string
+      required:
+        - username
+        - role
 
     AdminLoginBody:
       type: object

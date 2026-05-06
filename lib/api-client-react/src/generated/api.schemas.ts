@@ -39,6 +39,24 @@ export interface PlayerStat {
   avatarUrl: string;
 }
 
+export interface AddPlayerBody {
+  username: string;
+  kills: number;
+  deaths: number;
+  playtimeMinutes: number;
+}
+
+export interface StaffMember {
+  username: string;
+  role: string;
+  avatarUrl: string;
+}
+
+export interface AddStaffBody {
+  username: string;
+  role: string;
+}
+
 export interface AdminLoginBody {
   username: string;
   password: string;

@@ -124,6 +124,36 @@ export const GetAdminPlayersResponseItem = zod.object({
 export const GetAdminPlayersResponse = zod.array(GetAdminPlayersResponseItem);
 
 /**
+ * @summary Add a player to the leaderboard
+ */
+export const AddPlayerBody = zod.object({
+  username: zod.string(),
+  kills: zod.number(),
+  deaths: zod.number(),
+  playtimeMinutes: zod.number(),
+});
+
+export const AddPlayerResponse = zod.object({
+  username: zod.string(),
+  kills: zod.number(),
+  deaths: zod.number(),
+  playtimeMinutes: zod.number(),
+  featured: zod.boolean(),
+  avatarUrl: zod.string(),
+});
+
+/**
+ * @summary Remove a player from the leaderboard
+ */
+export const DeletePlayerParams = zod.object({
+  username: zod.coerce.string(),
+});
+
+export const DeletePlayerResponse = zod.object({
+  success: zod.boolean(),
+});
+
+/**
  * @summary Toggle featured status for a player
  */
 export const FeaturePlayerParams = zod.object({
@@ -131,5 +161,40 @@ export const FeaturePlayerParams = zod.object({
 });
 
 export const FeaturePlayerResponse = zod.object({
+  success: zod.boolean(),
+});
+
+/**
+ * @summary Get staff team list
+ */
+export const GetAdminStaffResponseItem = zod.object({
+  username: zod.string(),
+  role: zod.string(),
+  avatarUrl: zod.string(),
+});
+export const GetAdminStaffResponse = zod.array(GetAdminStaffResponseItem);
+
+/**
+ * @summary Add or update a staff member
+ */
+export const AddStaffMemberBody = zod.object({
+  username: zod.string(),
+  role: zod.string(),
+});
+
+export const AddStaffMemberResponse = zod.object({
+  username: zod.string(),
+  role: zod.string(),
+  avatarUrl: zod.string(),
+});
+
+/**
+ * @summary Remove a staff member
+ */
+export const DeleteStaffMemberParams = zod.object({
+  username: zod.coerce.string(),
+});
+
+export const DeleteStaffMemberResponse = zod.object({
   success: zod.boolean(),
 });

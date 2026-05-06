@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { validateAdmin } from "../lib/adminAuth";
-import { serverSettings, playerStats } from "../lib/store";
+import { serverSettings, playerStats, staffTeam } from "../lib/store";
 import {
   AdminLoginBody,
   AdminLoginResponse,
@@ -12,6 +12,15 @@ import {
   GetAdminPlayersResponse,
   FeaturePlayerParams,
   FeaturePlayerResponse,
+  AddPlayerBody,
+  AddPlayerResponse,
+  DeletePlayerParams,
+  DeletePlayerResponse,
+  GetAdminStaffResponse,
+  AddStaffMemberBody,
+  AddStaffMemberResponse,
+  DeleteStaffMemberParams,
+  DeleteStaffMemberResponse,
 } from "@workspace/api-zod";
 
 const router: IRouter = Router();
@@ -120,6 +129,65 @@ router.get(
 );
 
 router.post(
+  "/admin/players",
+  requireAdmin,
+  async (req, res): Promise<void> => {
+    const parsed = AddPlayerBody.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.message });
+      return;
+    }
+
+    const existing = playerStats.find(
+      (p) => p.username.toLowerCase() === parsed.data.username.toLowerCase()
+    );
+    if (existing) {
+      res.status(409).json({ error: "Player already exists" });
+      return;
+    }
+
+    const newPlayer = {
+      username: parsed.data.username,
+      kills: parsed.data.kills,
+      deaths: parsed.data.deaths,
+      playtimeMinutes: parsed.data.playtimeMinutes,
+      featured: false,
+      avatarUrl: `https://mc-heads.net/avatar/${parsed.data.username}`,
+    };
+    playerStats.push(newPlayer);
+
+    res.json(AddPlayerResponse.parse(newPlayer));
+  }
+);
+
+router.delete(
+  "/admin/players/:username",
+  requireAdmin,
+  async (req, res): Promise<void> => {
+    const params = DeletePlayerParams.safeParse(req.params);
+    if (!params.success) {
+      res.status(400).json({ error: params.error.message });
+      return;
+    }
+
+    const idx = playerStats.findIndex(
+      (p) => p.username === params.data.username
+    );
+    if (idx === -1) {
+      res.status(404).json({ error: "Player not found" });
+      return;
+    }
+
+    playerStats.splice(idx, 1);
+    serverSettings.featuredPlayers = serverSettings.featuredPlayers.filter(
+      (u) => u !== params.data.username
+    );
+
+    res.json(DeletePlayerResponse.parse({ success: true }));
+  }
+);
+
+router.post(
   "/admin/players/:username/feature",
   requireAdmin,
   async (req, res): Promise<void> => {
@@ -150,6 +218,67 @@ router.post(
     }
 
     res.json(FeaturePlayerResponse.parse({ success: true }));
+  }
+);
+
+router.get(
+  "/admin/staff",
+  requireAdmin,
+  async (_req, res): Promise<void> => {
+    res.json(GetAdminStaffResponse.parse(staffTeam));
+  }
+);
+
+router.post(
+  "/admin/staff",
+  requireAdmin,
+  async (req, res): Promise<void> => {
+    const parsed = AddStaffMemberBody.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: parsed.error.message });
+      return;
+    }
+
+    const existing = staffTeam.find(
+      (s) => s.username.toLowerCase() === parsed.data.username.toLowerCase()
+    );
+    if (existing) {
+      existing.role = parsed.data.role;
+      res.json(AddStaffMemberResponse.parse(existing));
+      return;
+    }
+
+    const newMember = {
+      username: parsed.data.username,
+      role: parsed.data.role,
+      avatarUrl: `https://mc-heads.net/avatar/${parsed.data.username}`,
+    };
+    staffTeam.push(newMember);
+
+    res.json(AddStaffMemberResponse.parse(newMember));
+  }
+);
+
+router.delete(
+  "/admin/staff/:username",
+  requireAdmin,
+  async (req, res): Promise<void> => {
+    const params = DeleteStaffMemberParams.safeParse(req.params);
+    if (!params.success) {
+      res.status(400).json({ error: params.error.message });
+      return;
+    }
+
+    const idx = staffTeam.findIndex(
+      (s) => s.username === params.data.username
+    );
+    if (idx === -1) {
+      res.status(404).json({ error: "Staff member not found" });
+      return;
+    }
+
+    staffTeam.splice(idx, 1);
+    res.json(DeleteStaffMemberResponse.parse({ success: true }));
   }
 );
 

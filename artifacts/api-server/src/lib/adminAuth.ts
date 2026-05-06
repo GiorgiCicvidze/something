@@ -1,5 +1,5 @@
 const ADMIN_ACCOUNTS: Record<string, { password: string; role: string }> = {
-  ducky: { password: "adminducky", role: "admin" },
+  ducky: { password: "adminducky", role: "dev" },
   critz: { password: "ownercritz", role: "owner" },
 };
 

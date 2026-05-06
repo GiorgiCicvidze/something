@@ -7,6 +7,12 @@ export interface PlayerStatRecord {
   avatarUrl: string;
 }
 
+export interface StaffMemberRecord {
+  username: string;
+  role: string;
+  avatarUrl: string;
+}
+
 export interface ServerSettingsRecord {
   motd: string;
   statusOverride: string | null;
@@ -52,5 +58,23 @@ export const onlinePlayers: Array<{ username: string; uuid: string; avatarUrl: s
     username: "ItzZaDucky",
     uuid: "b2c3d4e5-f6a7-8901-bcde-f01234567891",
     avatarUrl: "https://mc-heads.net/avatar/ItzZaDucky",
+  },
+];
+
+export const staffTeam: StaffMemberRecord[] = [
+  {
+    username: "critz_1",
+    role: "Owner",
+    avatarUrl: "https://mc-heads.net/avatar/critz_1",
+  },
+  {
+    username: "ItzZaDucky",
+    role: "Developer",
+    avatarUrl: "https://mc-heads.net/avatar/ItzZaDucky",
+  },
+  {
+    username: "babnana_peall",
+    role: "Developer",
+    avatarUrl: "https://mc-heads.net/avatar/babnana_peall",
   },
 ];
