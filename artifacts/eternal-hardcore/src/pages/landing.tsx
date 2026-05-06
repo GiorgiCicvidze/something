@@ -10,7 +10,10 @@ import {
 } from "@workspace/api-client-react";
 import { ParticleBackground } from "@/components/ParticleBackground";
 import { CustomCursor } from "@/components/CustomCursor";
-import { Skull, Swords, Clock, Users, Wifi, WifiOff, Copy, Check, ChevronDown, Star } from "lucide-react";
+import { DemoWarning } from "@/components/DemoWarning";
+import { Skull, Swords, Clock, Users, Wifi, WifiOff, Copy, Check, ChevronDown, Star, MessageCircle } from "lucide-react";
+
+const DISCORD_URL = "https://discord.gg/uJ4yv5YB2";
 
 const SERVER_IP = "play.eternalhardcore.xyz";
 
@@ -67,6 +70,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden" style={{ cursor: "none" }}>
       <CustomCursor />
+      <DemoWarning />
 
       {/* HERO SECTION */}
       <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
@@ -144,6 +148,18 @@ export default function LandingPage() {
                 </motion.span>
               )}
             </button>
+
+            {/* Discord button */}
+            <a
+              href={DISCORD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-interactive="true"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#5865F2]/30 bg-[#5865F2]/10 hover:bg-[#5865F2]/20 hover:border-[#5865F2]/50 transition-all duration-300 text-sm font-mono text-[#7289DA]"
+            >
+              <MessageCircle className="w-4 h-4" />
+              Join our Discord
+            </a>
 
             {/* Player count */}
             <div className="flex items-center gap-2 text-sm text-muted-foreground font-mono">
@@ -444,12 +460,21 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="flex flex-col items-center md:items-end gap-1">
+            <div className="flex flex-col items-center md:items-end gap-3">
+              <a
+                href={DISCORD_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#5865F2]/25 bg-[#5865F2]/8 hover:bg-[#5865F2]/15 hover:border-[#5865F2]/40 transition-all duration-300 text-xs font-mono text-[#7289DA]"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                discord.gg/uJ4yv5YB2
+              </a>
               <p className="text-xs font-mono text-muted-foreground">
                 Owner: <span className="text-foreground">critz_1</span>
               </p>
               <p className="text-xs font-mono text-muted-foreground">
-                Main Developer: <span className="text-foreground">ItzZaDucky</span>
+                Developer: <span className="text-foreground">ItzZaDucky</span>
               </p>
             </div>
           </div>
