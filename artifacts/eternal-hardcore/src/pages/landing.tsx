@@ -108,14 +108,6 @@ export default function LandingPage() {
             </h1>
           </motion.div>
 
-          {/* Tagline */}
-          <motion.p
-            variants={itemVariants}
-            className="text-lg md:text-xl text-muted-foreground font-mono mt-6 mb-10 tracking-widest uppercase"
-          >
-            One life. No mercy. No second chances.
-          </motion.p>
-
           {/* IP Copy button */}
           <motion.div variants={itemVariants} className="flex flex-col items-center gap-4">
             <button
@@ -335,8 +327,9 @@ export default function LandingPage() {
 
             <div className="flex flex-wrap justify-center gap-8">
               {[
-                { username: "ItzZaDucky", role: "Developer", color: "text-secondary" },
                 { username: "critz_1", role: "Owner", color: "text-primary" },
+                { username: "ItzZaDucky", role: "Developer", color: "text-secondary" },
+                { username: "babnana_peall", role: "Developer", color: "text-secondary" },
               ].map((member, i) => (
                 <motion.div
                   key={member.username}
