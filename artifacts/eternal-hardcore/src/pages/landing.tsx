@@ -303,6 +303,51 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* STAFF TEAM SECTION */}
+      <section className="relative py-24 px-6 border-t border-white/5">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={containerVariants}
+          >
+            <motion.div variants={itemVariants} className="text-center mb-16">
+              <p className="text-xs font-mono uppercase tracking-widest text-primary mb-3">The Team</p>
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight">Staff Team</h2>
+            </motion.div>
+
+            <div className="flex flex-wrap justify-center gap-8">
+              {[
+                { username: "ItzZaDucky", role: "Developer", color: "text-secondary" },
+                { username: "critz_1", role: "Owner", color: "text-primary" },
+              ].map((member, i) => (
+                <motion.div
+                  key={member.username}
+                  variants={itemVariants}
+                  custom={i}
+                  className="flex flex-col items-center gap-4 p-8 rounded-2xl border border-white/5 bg-card/30 backdrop-blur-sm hover:border-primary/20 hover:bg-card/50 transition-all duration-300 group w-56"
+                >
+                  <div className="relative">
+                    <img
+                      src={`https://mc-heads.net/avatar/${member.username}/80`}
+                      alt={member.username}
+                      className="w-20 h-20 rounded-xl group-hover:scale-105 transition-transform duration-300"
+                      style={{ imageRendering: "pixelated" }}
+                    />
+                    <div className="absolute inset-0 rounded-xl ring-1 ring-white/10 group-hover:ring-primary/30 transition-all duration-300" />
+                  </div>
+                  <div className="text-center">
+                    <p className="font-mono font-bold text-foreground">{member.username}</p>
+                    <p className={`text-xs font-mono uppercase tracking-widest mt-1 ${member.color}`}>{member.role}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* LEADERBOARD SECTION */}
       <section className="relative py-24 px-6 border-t border-white/5">
         <div className="max-w-5xl mx-auto">

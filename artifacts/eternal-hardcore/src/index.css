@@ -179,6 +179,13 @@
   --ring: 348 83% 47%;
 }
 
+/* Hide Replit badge */
+#replit-badge-container,
+[data-replit-badge],
+iframe[src*="replit"] {
+  display: none !important;
+}
+
 @layer base {
   * {
     @apply border-border;

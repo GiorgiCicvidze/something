@@ -3,20 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-
   const [isHovering, setIsHovering] = useState(false);
-  const [isClicking, setIsClicking] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   const mousePos = useRef({ x: 0, y: 0 });
   const ringPos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Hide on touch devices
-    if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
-      return;
-    }
-    
+    if ("ontouchstart" in window || navigator.maxTouchPoints > 0) return;
     setIsVisible(true);
 
     const onMouseMove = (e: MouseEvent) => {
@@ -26,44 +20,36 @@ export function CustomCursor() {
       }
     };
 
-    const onMouseDown = () => setIsClicking(true);
-    const onMouseUp = () => setIsClicking(false);
-
     const onMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target.closest('a, button, input, [role="button"], [data-interactive="true"]')) {
-        setIsHovering(true);
-      } else {
-        setIsHovering(false);
-      }
+      setIsHovering(!!target.closest('a, button, input, [role="button"], [data-interactive="true"]'));
     };
 
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mouseup", onMouseUp);
-    window.addEventListener("mouseover", onMouseOver);
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener("mouseover", onMouseOver, { passive: true });
 
-    let animationFrameId: number;
+    let rafId: number;
+    const lerp = 0.35;
 
     const render = () => {
-      ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.15;
-      ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.15;
+      const dx = mousePos.current.x - ringPos.current.x;
+      const dy = mousePos.current.y - ringPos.current.y;
+      ringPos.current.x += dx * lerp;
+      ringPos.current.y += dy * lerp;
 
       if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
+        ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0) scale(${isHovering ? 1.6 : 1})`;
       }
-      animationFrameId = requestAnimationFrame(render);
+      rafId = requestAnimationFrame(render);
     };
     render();
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mouseup", onMouseUp);
       window.removeEventListener("mouseover", onMouseOver);
-      cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [isHovering]);
 
   if (!isVisible) return null;
 
@@ -71,15 +57,31 @@ export function CustomCursor() {
     <>
       <div
         ref={dotRef}
-        className={`fixed top-0 left-0 w-2 h-2 -ml-1 -mt-1 bg-primary rounded-full pointer-events-none z-[9999] transition-transform duration-100 ${
-          isClicking ? "scale-50" : "scale-100"
-        }`}
+        className="fixed top-0 left-0 pointer-events-none z-[9999]"
+        style={{
+          width: 8,
+          height: 8,
+          marginLeft: -4,
+          marginTop: -4,
+          background: "hsl(348 83% 47%)",
+          borderRadius: "50%",
+          willChange: "transform",
+        }}
       />
       <div
         ref={ringRef}
-        className={`fixed top-0 left-0 w-8 h-8 -ml-4 -mt-4 border border-primary/50 rounded-full pointer-events-none z-[9998] transition-all duration-200 ${
-          isHovering ? "scale-150 border-primary bg-primary/10" : "scale-100"
-        } ${isClicking ? "scale-90 bg-primary/30" : ""}`}
+        className="fixed top-0 left-0 pointer-events-none z-[9998]"
+        style={{
+          width: 28,
+          height: 28,
+          marginLeft: -14,
+          marginTop: -14,
+          border: `1.5px solid hsl(348 83% 47% / 0.6)`,
+          borderRadius: "50%",
+          willChange: "transform",
+          transition: "border-color 0.15s",
+          background: isHovering ? "hsl(348 83% 47% / 0.08)" : "transparent",
+        }}
       />
     </>
   );
